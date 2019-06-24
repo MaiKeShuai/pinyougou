@@ -24,8 +24,6 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public PageInfo<TbBrand> findAllPage(Integer pageNum, Integer pageSize) {
 
-
-
         //带分页查询所有数据
         PageHelper.startPage(pageNum,pageSize);
         List<TbBrand> tbBrandList = brandMapper.selectByExample(null);
@@ -37,5 +35,21 @@ public class BrandServiceImpl implements BrandService {
         System.out.println(pageInfo);
 
         return pageInfo;
+    }
+
+    @Override
+    public void add(TbBrand tbBrand) {
+        brandMapper.insert(tbBrand);
+    }
+
+    @Override
+    public TbBrand findById(Long id) {
+        TbBrand tbBrand = brandMapper.selectByPrimaryKey(id);
+        return tbBrand;
+    }
+
+    @Override
+    public void update(TbBrand tbBrand) {
+        brandMapper.updateByPrimaryKey(tbBrand);
     }
 }
