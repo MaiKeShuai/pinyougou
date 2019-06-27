@@ -42,4 +42,19 @@ public interface BrandService {
      * @param tbBrand
      */
     void update(TbBrand tbBrand);
+
+    /**
+     * 根据id删除数据
+     * @param ids
+     */
+    void delete(Long[] ids);
+
+    /**
+     * 添加查询,分页
+     * @param tbBrand 查询条件,封装到tbBrand中
+     * @param pageNum 当前页
+     * @param pageSize 当前页中的纪录数据
+     * @return PageInfo
+     */
+    PageInfo<TbBrand> search(TbBrand tbBrand,Integer pageNum,Integer pageSize);
 }

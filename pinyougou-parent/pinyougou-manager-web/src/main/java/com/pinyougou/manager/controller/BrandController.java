@@ -48,7 +48,7 @@ public class BrandController {
     }
 
     @RequestMapping("/findById")
-    public TbBrand findByid(Long id){
+    public TbBrand findById(Long id){
         return brandService.findById(id);
     }
 
@@ -64,5 +64,27 @@ public class BrandController {
             result.setMessage("修改失败,请联系管理员!或请稍后重试");
         }
         return result;
+    }
+
+    @RequestMapping("/delete")
+    public Result delete(Long[] ids){
+        Result result = new Result();
+        try {
+            brandService.delete(ids);
+            result.setSuccess(true);
+            result.setMessage("删除成功!");
+        }catch (Exception e){
+            result.setSuccess(false);
+            result.setMessage("删除失败,请联系管理员!或请稍后重试");
+        }
+        return result;
+    }
+
+    @RequestMapping("/search")
+    public PageInfo<TbBrand> search(@RequestBody TbBrand tbBrand, Integer page,Integer size){
+
+        PageInfo<TbBrand> pageInfo = brandService.search(tbBrand, page, size);
+
+        return pageInfo;
     }
 }
