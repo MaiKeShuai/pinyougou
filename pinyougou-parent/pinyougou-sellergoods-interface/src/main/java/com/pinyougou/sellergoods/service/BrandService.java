@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbBrand;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品品牌接口
@@ -57,4 +58,6 @@ public interface BrandService {
      * @return PageInfo
      */
     PageInfo<TbBrand> search(TbBrand tbBrand,Integer pageNum,Integer pageSize);
+
+    List<Map> selectOptionList();
 }

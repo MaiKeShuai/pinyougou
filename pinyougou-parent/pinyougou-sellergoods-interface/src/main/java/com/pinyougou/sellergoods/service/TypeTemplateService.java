@@ -1,26 +1,23 @@
 package com.pinyougou.sellergoods.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.pojo.TbSpecification;
-import com.pinyougou.pojo.grop.Specification;
-
+import com.pinyougou.pojo.TbTypeTemplate;
 
 /**
  * 服务层接口
  *
  * @author Administrator
  */
-public interface SpecificationService {
+public interface TypeTemplateService {
 
     /**
      * 返回全部列表
      *
      * @return
      */
-    public List<TbSpecification> findAll();
+    public List<TbTypeTemplate> findAll();
 
 
     /**
@@ -28,19 +25,19 @@ public interface SpecificationService {
      *
      * @return
      */
-    public PageInfo<TbSpecification> findPage(int pageNum, int pageSize);
+    public PageInfo<TbTypeTemplate> findPage(int pageNum, int pageSize);
 
 
     /**
      * 增加
      */
-    public void add(Specification specification);
+    public void add(TbTypeTemplate typeTemplate);
 
 
     /**
      * 修改
      */
-    public void update(Specification specification);
+    public void update(TbTypeTemplate typeTemplate);
 
 
     /**
@@ -49,7 +46,7 @@ public interface SpecificationService {
      * @param id
      * @return
      */
-    public Specification findOne(Long id);
+    public TbTypeTemplate findOne(Long id);
 
 
     /**
@@ -66,7 +63,6 @@ public interface SpecificationService {
      * @param pageSize 每页记录数
      * @return
      */
-    public PageInfo<TbSpecification> findPage(TbSpecification specification, int pageNum, int pageSize);
+    public PageInfo<TbTypeTemplate> findPage(TbTypeTemplate typeTemplate, int pageNum, int pageSize);
 
-    List<Map> selectOptionList();
 }

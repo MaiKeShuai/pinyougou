@@ -1,11 +1,11 @@
 //控制层
-app.controller('specificationController', function ($scope, $controller, specificationService) {
+app.controller('typeTemplateController', function ($scope, $controller, typeTemplateService, brandService, specificationService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
     //读取列表数据绑定到表单中  
     $scope.findAll = function () {
-        specificationService.findAll().success(
+        typeTemplateService.findAll().success(
             function (response) {
                 $scope.list = response.list;
             }
@@ -14,7 +14,7 @@ app.controller('specificationController', function ($scope, $controller, specifi
 
     //分页
     $scope.findPage = function (page, rows) {
-        specificationService.findPage(page, rows).success(
+        typeTemplateService.findPage(page, rows).success(
             function (response) {
                 $scope.list = response.list;
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
@@ -24,7 +24,7 @@ app.controller('specificationController', function ($scope, $controller, specifi
 
     //查询实体
     $scope.findOne = function (id) {
-        specificationService.findOne(id).success(
+        typeTemplateService.findOne(id).success(
             function (response) {
                 $scope.entity = response;
             }
@@ -34,10 +34,10 @@ app.controller('specificationController', function ($scope, $controller, specifi
     //保存
     $scope.save = function () {
         var serviceObject;//服务层对象
-        if ($scope.entity.specification.id != null) {//如果有ID
-            serviceObject = specificationService.update($scope.entity); //修改
+        if ($scope.entity.id != null) {//如果有ID
+            serviceObject = typeTemplateService.update($scope.entity); //修改
         } else {
-            serviceObject = specificationService.add($scope.entity);//增加
+            serviceObject = typeTemplateService.add($scope.entity);//增加
         }
         serviceObject.success(
             function (response) {
@@ -55,7 +55,7 @@ app.controller('specificationController', function ($scope, $controller, specifi
     //批量删除
     $scope.dele = function () {
         //获取选中的复选框
-        specificationService.dele($scope.selectIds).success(
+        typeTemplateService.dele($scope.selectIds).success(
             function (response) {
                 if (response.success) {
                     $scope.reloadList();//刷新列表
@@ -69,21 +69,42 @@ app.controller('specificationController', function ($scope, $controller, specifi
 
     //搜索
     $scope.search = function (page, rows) {
-        specificationService.search(page, rows, $scope.searchEntity).success(function (response) {
+        typeTemplateService.search(page, rows, $scope.searchEntity).success(
+            function (response) {
                 $scope.list = response.list;
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
-    }
+    };
 
-    $scope.entity = {specificationOptionList: [{}]};
-    //添加一行规格
+    //品牌下拉列表数据
+    $scope.brandList = {data: []};
+    //获取品牌列表数据
+    $scope.findBrandList = function () {
+        brandService.selectOptionList().success(function (data) {
+            $scope.brandList = {data: data};
+        })
+    };
+
+    //规格下拉列表数据
+    $scope.specList = {data: []}
+    //获取规格列表数据
+    $scope.findSpecList = function () {
+        specificationService.selectOptionList().success(function (data) {
+            $scope.specList = {data: data}
+        })
+    };
+
+
+
+    $scope.entity = {customAttributeItems: [{}]};
+    //新增一行
     $scope.addTableRow = function () {
-        $scope.entity.specificationOptionList.push({});
-    }
-    //删除一行规格
+        $scope.entity.customAttributeItems.push({});
+    };
+
     $scope.deleteTableRow = function (index) {
-        $scope.entity.specificationOptionList.splice(index, 1);
+        $scope.entity.customAttributeItems.splice(index, 1);
     }
 
 });	

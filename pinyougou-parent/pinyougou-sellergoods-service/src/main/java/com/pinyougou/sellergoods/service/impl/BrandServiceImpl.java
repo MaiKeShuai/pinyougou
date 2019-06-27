@@ -10,6 +10,7 @@ import com.pinyougou.sellergoods.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -81,5 +82,10 @@ public class BrandServiceImpl implements BrandService {
         PageInfo<TbBrand> pageInfo = new PageInfo<TbBrand>(list);
 
         return pageInfo;
+    }
+
+    @Override
+    public List<Map> selectOptionList() {
+        return brandMapper.selectOptionList();
     }
 }

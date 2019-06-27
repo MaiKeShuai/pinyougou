@@ -2,6 +2,7 @@ package com.pinyougou.sellergoods.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.TbSpecificationOptionMapper;
@@ -147,6 +148,11 @@ public class SpecificationServiceImpl implements SpecificationService {
 
         return new PageInfo<TbSpecification>(list);
 
+    }
+
+    @Override
+    public List<Map> selectOptionList() {
+        return specificationMapper.selectOptionList();
     }
 
 }

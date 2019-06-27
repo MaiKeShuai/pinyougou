@@ -66,22 +66,22 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-    id, spec_name
-  </sql>
-    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.pinyougou.pojo.TbSpecificationExample">
-        select
-        <if test="distinct">
-            distinct
-        </if>
-        <include refid="Base_Column_List"/>
-        from tb_specification
-        <if test="_parameter != null">
-            <include refid="Example_Where_Clause"/>
-        </if>
-        <if test="orderByClause != null">
-            order by ${orderByClause}
-        </if>
-    </select>
+        id, spec_name
+    </sql>
+        <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.pinyougou.pojo.TbSpecificationExample">
+            select
+            <if test="distinct">
+                distinct
+            </if>
+            <include refid="Base_Column_List"/>
+            from tb_specification
+            <if test="_parameter != null">
+                <include refid="Example_Where_Clause"/>
+            </if>
+            <if test="orderByClause != null">
+                order by ${orderByClause}
+            </if>
+        </select>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
@@ -89,9 +89,9 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from tb_specification
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+        delete from tb_specification
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
     <delete id="deleteByExample" parameterType="com.pinyougou.pojo.TbSpecificationExample">
         delete from tb_specification
         <if test="_parameter != null">
@@ -103,8 +103,8 @@
         <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
             SELECT LAST_INSERT_ID() AS id
         </selectKey>
-        insert into tb_specification (id, spec_name)
-        values (#{id,jdbcType=BIGINT}, #{specName,jdbcType=VARCHAR})
+            insert into tb_specification (id, spec_name)
+            values (#{id,jdbcType=BIGINT}, #{specName,jdbcType=VARCHAR})
     </insert>
     <insert id="insertSelective" parameterType="com.pinyougou.pojo.TbSpecification">
         insert into tb_specification
@@ -132,6 +132,7 @@
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
+
     <update id="updateByExampleSelective" parameterType="map">
         update tb_specification
         <set>
@@ -164,8 +165,12 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.pinyougou.pojo.TbSpecification">
-    update tb_specification
-    set spec_name = #{specName,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+        update tb_specification
+        set spec_name = #{specName,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectOptionList" resultType="java.util.Map">
+        select id, spec_name as text from tb_specification
+    </select>
 </mapper>
