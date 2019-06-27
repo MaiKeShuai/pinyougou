@@ -37,7 +37,7 @@ app.controller('specificationController' ,function($scope,$controller   ,specifi
 		if($scope.entity.id!=null){//如果有ID
 			serviceObject=specificationService.update( $scope.entity ); //修改  
 		}else{
-			serviceObject=specificationService.add( $scope.entity  );//增加 
+			serviceObject=specificationService.add( $scope.entity  );//增加
 		}				
 		serviceObject.success(
 			function(response){
@@ -65,8 +65,8 @@ app.controller('specificationController' ,function($scope,$controller   ,specifi
 		);				
 	}
 	
-	$scope.searchEntity={};//定义搜索对象 
-	
+	$scope.searchEntity={};//定义搜索对象
+
 	//搜索
 	$scope.search=function(page,rows){			
 		specificationService.search(page,rows,$scope.searchEntity).success(
@@ -76,5 +76,15 @@ app.controller('specificationController' ,function($scope,$controller   ,specifi
 			}			
 		);
 	}
-    
+
+	$scope.entity = {specificationOptionList:[{}]};
+	//添加一行规格
+	$scope.addTableRow=function () {
+		$scope.entity.specificationOptionList.push({});
+	}
+    //删除一行规格
+	$scope.deleteTableRow=function (index) {
+		$scope.entity.specificationOptionList.splice(index,1);
+	}
+
 });	

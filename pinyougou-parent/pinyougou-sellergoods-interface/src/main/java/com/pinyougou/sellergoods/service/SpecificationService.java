@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbSpecification;
+import com.pinyougou.pojo.grop.Specification;
 
 
 /**
@@ -32,7 +33,7 @@ public interface SpecificationService {
     /**
      * 增加
      */
-    public void add(TbSpecification specification);
+    public void add(Specification specification);
 
 
     /**
