@@ -1,14 +1,15 @@
 package com.pinyougou.sellergoods.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.TbSpecificationOptionMapper;
 import com.pinyougou.pojo.TbSpecificationOption;
+import com.pinyougou.pojo.TbSpecificationOptionExample;
 import com.pinyougou.pojo.grop.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbSpecificationMapper;
 import com.pinyougou.pojo.TbSpecification;
@@ -71,8 +72,22 @@ public class SpecificationServiceImpl implements SpecificationService {
      * 修改
      */
     @Override
-    public void update(TbSpecification specification) {
-        specificationMapper.updateByPrimaryKey(specification);
+    public void update(Specification specification) {
+
+        //删除原来规格选项
+        TbSpecificationOptionExample example = new TbSpecificationOptionExample();
+        example.createCriteria().andSpecIdEqualTo(specification.getSpecification().getId());
+        specificationOptionMapper.deleteByExample(example);
+
+        //获取规格实体---修改规格数据
+        TbSpecification tbSpecification = specification.getSpecification();
+        specificationMapper.updateByPrimaryKey(tbSpecification);
+
+        //调用添加方法,重新添加一条数据
+        for (TbSpecificationOption tbSpecificationOption : specification.getSpecificationOptionList()) {
+            tbSpecificationOption.setSpecId(tbSpecification.getId());   //设置规格id
+            specificationOptionMapper.insert(tbSpecificationOption);    //存储新的规格选项
+        }
     }
 
     /**
@@ -82,8 +97,21 @@ public class SpecificationServiceImpl implements SpecificationService {
      * @return
      */
     @Override
-    public TbSpecification findOne(Long id) {
-        return specificationMapper.selectByPrimaryKey(id);
+    public Specification findOne(Long id) {
+
+        //根据id查询tbSpecification对象
+        TbSpecification tbSpecification = specificationMapper.selectByPrimaryKey(id);
+        //根据id查询tbSpecificationOption对象
+        TbSpecificationOptionExample example = new TbSpecificationOptionExample();
+        TbSpecificationOptionExample.Criteria criteria = example.createCriteria();
+        criteria.andSpecIdEqualTo(id);
+        List<TbSpecificationOption> tbSpecificationOptionList = specificationOptionMapper.selectByExample(example);
+        //封装Specification对象
+        Specification specification = new Specification();
+        specification.setSpecification(tbSpecification);
+        specification.setSpecificationOptionList(tbSpecificationOptionList);
+
+        return specification;
     }
 
     /**
@@ -92,27 +120,33 @@ public class SpecificationServiceImpl implements SpecificationService {
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
+            //根据id删除规格数据
             specificationMapper.deleteByPrimaryKey(id);
+            //根据id=SpecId删除option中的数据
+            TbSpecificationOptionExample example = new TbSpecificationOptionExample();
+            TbSpecificationOptionExample.Criteria criteria = example.createCriteria().andSpecIdEqualTo(id);
+            specificationOptionMapper.deleteByExample(example);
         }
     }
 
 
     @Override
     public PageInfo<TbSpecification> findPage(TbSpecification specification, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
+        PageHelper.startPage(pageNum, pageSize);    //分页
 
         TbSpecificationExample example = new TbSpecificationExample();
         Criteria criteria = example.createCriteria();
 
-        if (specification != null) {
+        if (specification != null) {    //筛选框中有数据,添加筛选条件
             if (specification.getSpecName() != null && specification.getSpecName().length() > 0) {
                 criteria.andSpecNameLike("%" + specification.getSpecName() + "%");
             }
-
         }
 
         List<TbSpecification> list = specificationMapper.selectByExample(example);
+
         return new PageInfo<TbSpecification>(list);
+
     }
 
 }
