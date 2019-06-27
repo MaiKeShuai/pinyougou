@@ -10,7 +10,7 @@ app.controller('typeTemplateController', function ($scope, $controller, typeTemp
                 $scope.list = response.list;
             }
         );
-    }
+    };
 
     //分页
     $scope.findPage = function (page, rows) {
@@ -20,16 +20,18 @@ app.controller('typeTemplateController', function ($scope, $controller, typeTemp
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
-    }
+    };
 
     //查询实体
     $scope.findOne = function (id) {
-        typeTemplateService.findOne(id).success(
-            function (response) {
-                $scope.entity = response;
-            }
-        );
-    }
+        typeTemplateService.findOne(id).success(function (response) {
+            $scope.entity = response;
+            //将返回过来的数据进行转换为json格式
+            $scope.entity.brandIds = JSON.parse($scope.entity.brandIds);
+            $scope.entity.specIds = JSON.parse($scope.entity.specIds);
+            $scope.entity.customAttributeItems = JSON.parse($scope.entity.customAttributeItems);
+        });
+    };
 
     //保存
     $scope.save = function () {
@@ -49,21 +51,19 @@ app.controller('typeTemplateController', function ($scope, $controller, typeTemp
                 }
             }
         );
-    }
+    };
 
 
     //批量删除
     $scope.dele = function () {
         //获取选中的复选框
-        typeTemplateService.dele($scope.selectIds).success(
-            function (response) {
-                if (response.success) {
-                    $scope.reloadList();//刷新列表
-                    $scope.selectIds = [];
-                }
+        typeTemplateService.dele($scope.selectIds).success(function (response) {
+            if (response.success) {
+                $scope.reloadList();//刷新列表
+                $scope.selectIds = [];
             }
-        );
-    }
+        });
+    };
 
     $scope.searchEntity = {};//定义搜索对象
 
