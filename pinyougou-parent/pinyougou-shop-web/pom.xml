@@ -13,6 +13,14 @@
     <packaging>war</packaging>
 
     <dependencies>
+        <!--引入接口依赖-->
+        <dependency>
+            <groupId>com.maikebai</groupId>
+            <artifactId>pinyougou-sellergoods-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>

@@ -4,53 +4,53 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TbSeller implements Serializable {
-    private String sellerId;
+    private String sellerId;    //用户ID
 
-    private String name;
+    private String name;        //公司名
 
-    private String nickName;
+    private String nickName;    //店铺名称
 
-    private String password;
+    private String password;    //密码
 
-    private String email;
+    private String email;       //EMAIL
 
-    private String mobile;
+    private String mobile;      //公司手机
 
-    private String telephone;
+    private String telephone;   //公司电话
 
-    private String status;
+    private String status;      //状态
 
-    private String addressDetail;
+    private String addressDetail;//详细地址
 
-    private String linkmanName;
+    private String linkmanName; //联系人姓名
 
-    private String linkmanQq;
+    private String linkmanQq;   //联系人QQ
 
-    private String linkmanMobile;
+    private String linkmanMobile;   //联系人电话
 
-    private String linkmanEmail;
+    private String linkmanEmail;    //联系人Email
 
-    private String licenseNumber;
+    private String licenseNumber;   //营业执照号
 
-    private String taxNumber;
+    private String taxNumber;       //税务登记证号
 
-    private String orgNumber;
+    private String orgNumber;       //组织机构代码
 
-    private Long address;
+    private Long address;           //公司地址
 
-    private String logoPic;
+    private String logoPic;         //公司LOGO图
 
-    private String brief;
+    private String brief;           //简介
 
-    private Date createTime;
+    private Date createTime;        //创建日期
 
-    private String legalPerson;
+    private String legalPerson;     //法定代表人
 
-    private String legalPersonCardId;
+    private String legalPersonCardId;   //法定代表人身份证
 
-    private String bankUser;
+    private String bankUser;        //开户行账号名称
 
-    private String bankName;
+    private String bankName;        //开户行
 
     public String getSellerId() {
         return sellerId;
