@@ -3,6 +3,7 @@ package com.pinyougou.shop.controller;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,6 +55,11 @@ public class SellerController {
     @RequestMapping("/add")
     public Result add(@RequestBody TbSeller seller) {
         try {
+            //将密码进行加密
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String encode = bCryptPasswordEncoder.encode(seller.getPassword());
+            seller.setPassword(encode);
+
             sellerService.add(seller);
             return new Result(true, "增加成功");
         } catch (Exception e) {

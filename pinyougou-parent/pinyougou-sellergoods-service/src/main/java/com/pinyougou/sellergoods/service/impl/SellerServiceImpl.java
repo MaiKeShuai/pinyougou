@@ -49,7 +49,7 @@ public class SellerServiceImpl implements SellerService {
      */
     @Override
     public void add(TbSeller seller) {
-        seller.setStatus("1");  //设置状态为未通过待审核
+        seller.setStatus("0");  //设置状态为未通过待审核
         seller.setCreateTime(new Date());   //设置申请日期
         sellerMapper.insert(seller);
     }
