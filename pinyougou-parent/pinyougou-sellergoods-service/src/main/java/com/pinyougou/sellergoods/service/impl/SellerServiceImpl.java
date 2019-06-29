@@ -166,4 +166,18 @@ public class SellerServiceImpl implements SellerService {
         return new PageInfo<>(list);
     }
 
+    /**
+     * 修改状态
+     * @param sellerId
+     * @param status
+     */
+    @Override
+    public void updataStatus(String sellerId, String status) {
+        //根据id查询出来单个信息
+        TbSeller tbSeller = sellerMapper.selectByPrimaryKey(sellerId);
+        tbSeller.setStatus(status);
+        //修改数据
+        sellerMapper.updateByPrimaryKey(tbSeller);
+    }
+
 }

@@ -29,4 +29,8 @@ app.service('sellerService', function ($http) {
     this.search = function (page, rows, searchEntity) {
         return $http.post('../seller/search.do?page=' + page + "&rows=" + rows, searchEntity);
     };
+    //商家审核
+    this.updataStatus = function (sellerId, status) {
+        return $http.post("../seller/updataStatus.do?sellerId=" + sellerId + "&status=" + status);
+    }
 });

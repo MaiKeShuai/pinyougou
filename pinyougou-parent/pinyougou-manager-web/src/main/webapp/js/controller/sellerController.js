@@ -89,4 +89,15 @@ app.controller('sellerController', function ($scope, $controller, sellerService)
         });
     }
 
+    //修改商家审核状态
+    $scope.updataStatus = function (sellerId,status) {
+        sellerService.updataStatus(sellerId,status).success(function (data) {
+            if (data.success){
+                $scope.reloadList();
+            } else {
+                alert(data.message);
+            }
+        })
+    }
+
 });	

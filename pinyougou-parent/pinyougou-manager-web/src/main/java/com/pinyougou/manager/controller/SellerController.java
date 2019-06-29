@@ -118,4 +118,18 @@ public class SellerController {
         return sellerService.findPage(seller, page, rows);
     }
 
+    /**
+     * 修改商家入驻审核状态
+     */
+    @RequestMapping("/updataStatus")
+    public Result updataStatus(String sellerId,String status){
+        try {
+            sellerService.updataStatus(sellerId,status);
+            return new Result(true, "修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "修改失败");
+        }
+    }
+
 }
