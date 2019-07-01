@@ -1,5 +1,5 @@
 //控制层
-app.controller('goodsController', function ($scope, $controller, goodsService) {
+app.controller('goodsController', function ($scope, $controller, goodsService, dfsService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -31,25 +31,19 @@ app.controller('goodsController', function ($scope, $controller, goodsService) {
         );
     }
 
-    //保存
-    $scope.save = function () {
-        var serviceObject;//服务层对象
-        if ($scope.entity.id != null) {//如果有ID
-            serviceObject = goodsService.update($scope.entity); //修改
-        } else {
-            serviceObject = goodsService.add($scope.entity);//增加
-        }
-        serviceObject.success(
-            function (response) {
-                if (response.success) {
-                    //重新查询
-                    $scope.reloadList();//重新加载
-                } else {
-                    alert(response.message);
-                }
+    //保存数据
+    $scope.add = function () {
+        $scope.entity.tbGoodsDesc.introduction = editor.html();
+        goodsService.add($scope.entity).success(function (response) {
+            if (response.success) {
+                alert("新增成功!");
+                $scope.entity={};
+                editor.html("");    //清空文本编辑器的内容
+            } else {
+                alert(response.message);
             }
-        );
-    }
+        });
+    };
 
 
     //批量删除
@@ -75,6 +69,17 @@ app.controller('goodsController', function ($scope, $controller, goodsService) {
                 $scope.paginationConf.totalItems = response.total;//更新总记录数
             }
         );
+    }
+
+    //文件的上传
+    $scope.upload = function () {
+        dfsService.upload().success(function (data) {
+            if (data.success) {
+                $scope.entity.imgStr = data.message;
+            } else {
+                alert(data.message);
+            }
+        })
     }
 
 });	
