@@ -27,16 +27,14 @@
     <script src="../js/base.js"></script>
     <script src="../js/service/goodsService.js"></script>
     <script src="../js/service/dfsService.js"></script>
+    <script src="../js/service/item_CatService.js"></script>
+    <script src="../js/service/type_TemplateService.js"></script>
     <script src="../js/controller/baseController.js"></script>
     <script src="../js/controller/goodsController.js"></script>
 
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController">
-<!--entity.tbGoods{{entity.tbGoods}}<br/>-->
-<!--entity.tbGoodsDesc{{entity.tbGoodsDesc}}-->
-{{entity}}
-
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController" ng-init="selectItemCat1List()">
 <!-- 正文区域 -->
 <section class="content">
 
@@ -73,10 +71,10 @@
                         <div class="col-md-10 data">
                             <table>
                                 <tr>
-                                    <td><select class="form-control"></select></td>
-                                    <td><select class="form-control select-sm"></select></td>
-                                    <td><select class="form-control select-sm"></select></td>
-                                    <td>模板ID:19</td>
+                                    <td><select class="form-control" ng-model="entity.tbGoods.categor1Id" ng-options="item.id as item.name for item in itemCat1List"></select></td>
+                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor2Id" ng-options="item.id as item.name for item in itemCat2List"></select></td>
+                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor3Id" ng-options="item.id as item.name for item in itemCat3List"></select></td>
+                                    <td ng-if="entity.tbGoods.typeTemplateId != null">模板ID:{{entity.tbGoods.typeTemplateId}}</td>
                                 </tr>
                             </table>
                         </div>
@@ -87,7 +85,9 @@
                         </div>
 
                         <div class="col-md-2 title">品牌</div>
-                        <div class="col-md-10 data"><select class="form-control"></select></div>
+                        <div class="col-md-10 data">
+                            <select class="form-control" ng-model="entity.tbGoods.brandId" ng-options="template.id as template.text for template in typeTemplate.brandIds"></select>
+                        </div>
 
                         <div class="col-md-2 title">副标题</div>
                         <div class="col-md-10 data">
@@ -126,7 +126,7 @@
                     <div class="row data-type">
                         <!-- 颜色图片 -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default" title="新建" data-target="#uploadModal" data-toggle="modal" ng-click="entity={}">
+                            <button type="button" class="btn btn-default" title="新建" data-target="#uploadModal" data-toggle="modal" ng-click="image_entity={}">
                                 <i class="fa fa-file-o"></i> 新建
                             </button>
                         </div>
@@ -139,30 +139,22 @@
                                 <th class="sorting">操作</th>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td></td>
-                                <td><img alt="" src="" width="100px" height="100px"></td>
-                                <td><button type="button" class="btn btn-default" title="删除"><i class="fa fa-trash-o"></i> 删除</button></td>
+                            <tr ng-repeat="pojo in entity.tbGoodsDesc.itemImages">
+                                <td>{{pojo.color}}</td>
+                                <td><img alt="" src="{{pojo.url}}" width="100px" height="100px"></td>
+                                <td><button type="button" class="btn btn-default" title="删除" ng-click="remove_image_entity($index)"><i class="fa fa-trash-o"></i> 删除</button></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-
                 <!--扩展属性-->
                 <div class="tab-pane" id="customAttribute">
                     <div class="row data-type">
-                        <div>
-                            <div class="col-md-2 title">扩展属性1</div>
+                        <div ng-repeat="pojo in entity.tbGoodsDesc.customAttributeItems">
+                            <div class="col-md-2 title">{{pojo.text}}</div>
                             <div class="col-md-10 data">
-                                <input class="form-control" placeholder="扩展属性1">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="col-md-2 title">扩展属性2</div>
-                            <div class="col-md-10 data">
-                                <input class="form-control" placeholder="扩展属性2">
+                                <input class="form-control" ng-model="pojo.value" placeholder="{{pojo.text}}">
                             </div>
                         </div>
                     </div>
@@ -180,35 +172,14 @@
                     <div>
                         <div class="row data-type">
 
-                            <div>
-                                <div class="col-md-2 title">屏幕尺寸</div>
+                            <div ng-repeat="pojo in specList">
+                                <div class="col-md-2 title">{{pojo.text}}</div>
                                 <div class="col-md-10 data">
-                                    <span>
-                                        <input type="checkbox">4.0
-                                    </span>
-                                    <span>
-                                        <input type="checkbox">4.5
-                                    </span>
-                                    <span>
-                                        <input type="checkbox">5.0
+                                    <span ng-repeat="option in pojo.option">
+                                        <input type="checkbox">{{option.optionName}}
                                     </span>
                                 </div>
                             </div>
-                            <div>
-                                <div class="col-md-2 title">网络制式</div>
-                                <div class="col-md-10 data">
-                                    <span>
-                                        <input type="checkbox">2G
-                                    </span>
-                                    <span>
-                                        <input type="checkbox">3G
-                                    </span>
-                                    <span>
-                                        <input type="checkbox">4G
-                                    </span>
-                                </div>
-                            </div>
-
                         </div>
 
 
@@ -339,7 +310,7 @@
                 <table class="table table-bordered table-striped">
                     <tr>
                         <td>颜色</td>
-                        <td><input class="form-control" placeholder="颜色" ng-model="entity.color"></td>
+                        <td><input class="form-control" placeholder="颜色" ng-model="color"></td>
                     </tr>
                     <tr>
                         <td>商品图片</td>
@@ -350,7 +321,7 @@
                                         <input type="file" id="file" name="file"/>
                                         <button class="btn btn-primary" type="button" ng-click="upload()">上传</button>
                                     </td>
-                                    <td><img src="{{entity.imgStr}}" ng-if="entity.imgStr != null" width="200px" height="200px"></td>
+                                    <td><img src="{{image_entity.url}}" ng-if="image_entity.url != null" width="200px" height="200px"></td>
                                 </tr>
                             </table>
                         </td>
@@ -358,7 +329,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">保存</button>
+                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="add_image_entity()">保存</button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>
