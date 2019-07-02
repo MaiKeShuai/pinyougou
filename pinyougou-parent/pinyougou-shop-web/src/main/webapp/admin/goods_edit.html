@@ -34,7 +34,8 @@
 
 </head>
 
-<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController" ng-init="selectItemCat1List()">
+<body class="hold-transition skin-red sidebar-mini" ng-app="pinyougou" ng-controller="goodsController"
+      ng-init="selectItemCat1List()">
 <!-- 正文区域 -->
 <section class="content">
 
@@ -71,22 +72,32 @@
                         <div class="col-md-10 data">
                             <table>
                                 <tr>
-                                    <td><select class="form-control" ng-model="entity.tbGoods.categor1Id" ng-options="item.id as item.name for item in itemCat1List"></select></td>
-                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor2Id" ng-options="item.id as item.name for item in itemCat2List"></select></td>
-                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor3Id" ng-options="item.id as item.name for item in itemCat3List"></select></td>
-                                    <td ng-if="entity.tbGoods.typeTemplateId != null">模板ID:{{entity.tbGoods.typeTemplateId}}</td>
+                                    <td><select class="form-control" ng-model="entity.tbGoods.categor1Id"
+                                                ng-options="item.id as item.name for item in itemCat1List"></select>
+                                    </td>
+                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor2Id"
+                                                ng-options="item.id as item.name for item in itemCat2List"></select>
+                                    </td>
+                                    <td><select class="form-control select-sm" ng-model="entity.tbGoods.categor3Id"
+                                                ng-options="item.id as item.name for item in itemCat3List"></select>
+                                    </td>
+                                    <td ng-if="entity.tbGoods.typeTemplateId != null">
+                                        模板ID:{{entity.tbGoods.typeTemplateId}}
+                                    </td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="col-md-2 title">商品名称</div>
                         <div class="col-md-10 data">
-                            <input type="text" class="form-control" placeholder="商品名称" ng-model="entity.tbGoods.goodsName">
+                            <input type="text" class="form-control" placeholder="商品名称"
+                                   ng-model="entity.tbGoods.goodsName">
                         </div>
 
                         <div class="col-md-2 title">品牌</div>
                         <div class="col-md-10 data">
-                            <select class="form-control" ng-model="entity.tbGoods.brandId" ng-options="template.id as template.text for template in typeTemplate.brandIds"></select>
+                            <select class="form-control" ng-model="entity.tbGoods.brandId"
+                                    ng-options="template.id as template.text for template in typeTemplate.brandIds"></select>
                         </div>
 
                         <div class="col-md-2 title">副标题</div>
@@ -98,7 +109,8 @@
                         <div class="col-md-10 data">
                             <div class="input-group">
                                 <span class="input-group-addon">¥</span>
-                                <input type="text" class="form-control" placeholder="价格" ng-model="entity.tbGoods.price">
+                                <input type="text" class="form-control" placeholder="价格"
+                                       ng-model="entity.tbGoods.price">
                             </div>
                         </div>
 
@@ -109,12 +121,14 @@
 
                         <div class="col-md-2 title rowHeight2x">包装列表</div>
                         <div class="col-md-10 data rowHeight2x">
-                            <textarea rows="4" class="form-control" placeholder="包装列表" ng-model="entity.tbGoodsDesc.packageList"></textarea>
+                            <textarea rows="4" class="form-control" placeholder="包装列表"
+                                      ng-model="entity.tbGoodsDesc.packageList"></textarea>
                         </div>
 
                         <div class="col-md-2 title rowHeight2x">售后服务</div>
                         <div class="col-md-10 data rowHeight2x">
-                            <textarea rows="4" class="form-control" placeholder="售后服务" ng-model="entity.tbGoodsDesc.saleService"></textarea>
+                            <textarea rows="4" class="form-control" placeholder="售后服务"
+                                      ng-model="entity.tbGoodsDesc.saleService"></textarea>
                         </div>
 
 
@@ -126,7 +140,8 @@
                     <div class="row data-type">
                         <!-- 颜色图片 -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default" title="新建" data-target="#uploadModal" data-toggle="modal" ng-click="image_entity={}">
+                            <button type="button" class="btn btn-default" title="新建" data-target="#uploadModal"
+                                    data-toggle="modal" ng-click="image_entity={}">
                                 <i class="fa fa-file-o"></i> 新建
                             </button>
                         </div>
@@ -142,7 +157,11 @@
                             <tr ng-repeat="pojo in entity.tbGoodsDesc.itemImages">
                                 <td>{{pojo.color}}</td>
                                 <td><img alt="" src="{{pojo.url}}" width="100px" height="100px"></td>
-                                <td><button type="button" class="btn btn-default" title="删除" ng-click="remove_image_entity($index)"><i class="fa fa-trash-o"></i> 删除</button></td>
+                                <td>
+                                    <button type="button" class="btn btn-default" title="删除"
+                                            ng-click="remove_image_entity($index)"><i class="fa fa-trash-o"></i> 删除
+                                    </button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -176,12 +195,12 @@
                                 <div class="col-md-2 title">{{pojo.text}}</div>
                                 <div class="col-md-10 data">
                                     <span ng-repeat="option in pojo.option">
-                                        <input type="checkbox">{{option.optionName}}
+                                        <input type="checkbox" ng-click="updateSpecAttribute($event,pojo.text,option.optionName)">{{option.optionName}}
                                     </span>
                                 </div>
                             </div>
                         </div>
-
+                        {{entity.tbGoodsDesc.specificationItems}}
 
                         <div class="row data-type">
                             <table class="table table-bordered table-striped table-hover dataTable">
@@ -321,7 +340,8 @@
                                         <input type="file" id="file" name="file"/>
                                         <button class="btn btn-primary" type="button" ng-click="upload()">上传</button>
                                     </td>
-                                    <td><img src="{{image_entity.url}}" ng-if="image_entity.url != null" width="200px" height="200px"></td>
+                                    <td><img src="{{image_entity.url}}" ng-if="image_entity.url != null" width="200px"
+                                             height="200px"></td>
                                 </tr>
                             </table>
                         </td>
@@ -329,7 +349,9 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="add_image_entity()">保存</button>
+                <button class="btn btn-success" data-dismiss="modal" aria-hidden="true" ng-click="add_image_entity()">
+                    保存
+                </button>
                 <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</button>
             </div>
         </div>

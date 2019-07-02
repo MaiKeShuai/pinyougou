@@ -1,5 +1,5 @@
 //控制层
-app.controller('goodsController', function ($scope, $controller, goodsService, dfsService,item_CatService,type_TemplateService) {
+app.controller('goodsController', function ($scope, $controller, goodsService, dfsService, item_CatService, type_TemplateService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -37,7 +37,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
         goodsService.add($scope.entity).success(function (response) {
             if (response.success) {
                 alert("新增成功!");
-                $scope.entity={};
+                $scope.entity = {};
                 editor.html("");    //清空文本编辑器的内容
             } else {
                 alert(response.message);
@@ -81,15 +81,15 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
         })
     };
 
-    $scope.entity={tbGoods:{},tbGoodsDesc:{itemImages:[]}};
+    $scope.entity = {tbGoods: {}, tbGoodsDesc: {itemImages: []}};
     //添加图片列表
     $scope.add_image_entity = function () {
-        $scope.entity.tbGoodsDesc.itemImages.push({color:$scope.color,url:$scope.image_entity.url});
+        $scope.entity.tbGoodsDesc.itemImages.push({color: $scope.color, url: $scope.image_entity.url});
     };
 
     //删除列表
     $scope.remove_image_entity = function (index) {
-        $scope.entity.tbGoodsDesc.itemImages.splice(index,1);
+        $scope.entity.tbGoodsDesc.itemImages.splice(index, 1);
     };
 
     //读取一级分类
@@ -100,7 +100,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
     };
 
     //读取二级分类
-    $scope.$watch("entity.tbGoods.categor1Id",function (newValue,oldValue) {
+    $scope.$watch("entity.tbGoods.categor1Id", function (newValue, oldValue) {
         //根据新改变的值查询二级分类
         item_CatService.findByParentId(newValue).success(function (data) {
             $scope.itemCat2List = data;
@@ -108,7 +108,7 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
     });
 
     //读取三级分类
-    $scope.$watch("entity.tbGoods.categor2Id",function (newValue,oldValue) {
+    $scope.$watch("entity.tbGoods.categor2Id", function (newValue, oldValue) {
         //二级分类的值改变,三级分类
         item_CatService.findByParentId(newValue).success(function (data) {
             $scope.itemCat3List = data;
@@ -116,14 +116,14 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
     });
 
     //三级分类选择完毕,则进行查询模板
-    $scope.$watch("entity.tbGoods.categor3Id",function (newValue, oldValue) {
+    $scope.$watch("entity.tbGoods.categor3Id", function (newValue, oldValue) {
         item_CatService.findOne(newValue).success(function (data) {
             $scope.entity.tbGoods.typeTemplateId = data.typeId;
         });
     });
 
     //监听模板id的更新,查询模板id中的品牌列表
-    $scope.$watch("entity.tbGoods.typeTemplateId",function (newValue,oldValue) {
+    $scope.$watch("entity.tbGoods.typeTemplateId", function (newValue, oldValue) {
         type_TemplateService.findOne(newValue).success(function (data) {
             $scope.typeTemplate = data;
             $scope.typeTemplate.brandIds = JSON.parse($scope.typeTemplate.brandIds);
@@ -136,5 +136,28 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
             $scope.specList = data;
         })
     });
+
+    //保存选中的规格选项
+    $scope.entity = {tbGoodsDesc: {itemImages: [], specificationItems: []}};
+
+    $scope.updateSpecAttribute = function ($event, name, value) {
+        var object = $scope.searchObjectByKey($scope.entity.tbGoodsDesc.specificationItems, 'attributeName', name);
+        if (object != null) {
+            if ($event.target.checked) {     //当前checkBox是选中状态
+                object.attributeValue.push(value);
+            } else {    //取消选中
+                object.attributeValue.splice(object.attributeValue.indexOf(value), 1);   //移除选项
+                //如果选项都取消了,则将此条纪录移除
+                if (object.attributeValue.length == 0) {
+                    $scope.entity.tbGoodsDesc.specificationItems.splice($scope.entity.tbGoodsDesc.specificationItems.indexOf(object), 1);
+                }
+            }
+        } else {
+            $scope.entity.tbGoodsDesc.specificationItems.push({"attributeName": name, "attributeValue": [value]});
+        }
+    }
+
+    //商品录入SKU商品信息
+
 
 });	
