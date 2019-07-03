@@ -95,28 +95,28 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
     //读取一级分类
     $scope.selectItemCat1List = function () {
         item_CatService.findByParentId(0).success(function (data) {
-            $scope.itemCat1List = data;
+            $scope.itemCaty1List = data;
         });
     };
 
     //读取二级分类
-    $scope.$watch("entity.tbGoods.categor1Id", function (newValue, oldValue) {
+    $scope.$watch("entity.tbGoods.category1Id", function (newValue, oldValue) {
         //根据新改变的值查询二级分类
         item_CatService.findByParentId(newValue).success(function (data) {
-            $scope.itemCat2List = data;
+            $scope.itemCaty2List = data;
         });
     });
 
     //读取三级分类
-    $scope.$watch("entity.tbGoods.categor2Id", function (newValue, oldValue) {
+    $scope.$watch("entity.tbGoods.category2Id", function (newValue, oldValue) {
         //二级分类的值改变,三级分类
         item_CatService.findByParentId(newValue).success(function (data) {
-            $scope.itemCat3List = data;
+            $scope.itemCaty3List = data;
         });
     });
 
     //三级分类选择完毕,则进行查询模板
-    $scope.$watch("entity.tbGoods.categor3Id", function (newValue, oldValue) {
+    $scope.$watch("entity.tbGoods.category3Id", function (newValue, oldValue) {
         item_CatService.findOne(newValue).success(function (data) {
             $scope.entity.tbGoods.typeTemplateId = data.typeId;
         });
@@ -155,9 +155,32 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
         } else {
             $scope.entity.tbGoodsDesc.specificationItems.push({"attributeName": name, "attributeValue": [value]});
         }
-    }
+    };
+
 
     //商品录入SKU商品信息
+    $scope.createTbItem = function () {
+        //初始化
+        $scope.entity.itemList = [{spec: {}, price: 0, num: 99999, status: '0', isDefault: '0'}];
 
+        var items = $scope.entity.tbGoodsDesc.specificationItems;
 
+        for (var i = 0; i < items.length; i++) {        //遍历得到的对象{"attributeName":"网络","attributeValue":["移动3G","移动4G"]}
+            $scope.entity.itemList = addColumn($scope.entity.itemList, items[i].attributeName, items[i].attributeValue);
+        }
+    }
+
+    addColumn = function (list, columnName, columnValues) {
+        var newList = [];//新集合
+        for (var i = 0; i < list.length; i++) {
+            var oldRow = list[i];
+            for (var j = 0; j < columnValues.length; j++) {
+                var newRow = JSON.parse(JSON.stringify(oldRow));//深克隆
+                newRow.spec[columnName] = columnValues[j];
+                newList.push(newRow);
+            }
+
+        }
+        return newList;
+    }
 });	
