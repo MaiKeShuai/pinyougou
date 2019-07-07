@@ -130,8 +130,8 @@ public class GoodsServiceImpl implements GoodsService {
         TbBrand tbBrand = brandMapper.selectByPrimaryKey(goods.getTbGoods().getBrandId());
         tbItem.setBrand(tbBrand.getName());
         //商家名称(店铺名称)
-//            TbSeller tbSeller = sellerMapper.selectByPrimaryKey(goods.getTbGoods().getSellerId());
-//            tbItem.setSeller(tbSeller.getNickName());
+        TbSeller tbSeller = sellerMapper.selectByPrimaryKey(goods.getTbGoods().getSellerId());
+        tbItem.setSeller(tbSeller.getNickName());
     }
 
 
@@ -174,7 +174,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         if (goods != null) {
             if (goods.getSellerId() != null && goods.getSellerId().length() > 0) {
-                criteria.andSellerIdLike("%" + goods.getSellerId() + "%");
+                criteria.andSellerIdLike(goods.getSellerId());  //精准匹配
             }
             if (goods.getGoodsName() != null && goods.getGoodsName().length() > 0) {
                 criteria.andGoodsNameLike("%" + goods.getGoodsName() + "%");

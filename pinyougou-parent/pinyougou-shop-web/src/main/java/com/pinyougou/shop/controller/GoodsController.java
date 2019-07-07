@@ -3,6 +3,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.grop.Goods;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,11 @@ public class GoodsController {
 	 */
 	@RequestMapping("/add")
 	public Result add(@RequestBody Goods goods){
+
+		//设置sellerId
+		String name = SecurityContextHolder.getContext().getAuthentication().getName();
+		goods.getTbGoods().setSellerId(name);
+
 		try {
 			goodsService.add(goods);
 			return new Result(true, "增加成功");
@@ -109,6 +115,10 @@ public class GoodsController {
 	 */
 	@RequestMapping("/search")
 	public PageInfo<TbGoods> search(@RequestBody TbGoods goods, int page, int rows  ){
+		//添加一条查询条件
+		String sellerId = SecurityContextHolder.getContext().getAuthentication().getName();
+		goods.setSellerId(sellerId);
+
 		return goodsService.findPage(goods, page, rows);		
 	}
 	
