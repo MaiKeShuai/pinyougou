@@ -70,8 +70,17 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/update")
-	public Result update(@RequestBody TbGoods goods){
+	public Result update(@RequestBody Goods goods){
 		try {
+			//校验修改的商品是否是自己的商品
+			Goods one = goodsService.findOne(goods.getTbGoods().getId());
+			//获取当前登录的商家id
+			String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
+			if (!one.getTbGoods().getSellerId().equals(name) || !goods.getTbGoods().getSellerId().equals(name)) {
+				return new Result(false,"非法操作");
+			}
+
 			goodsService.update(goods);
 			return new Result(true, "修改成功");
 		} catch (Exception e) {
@@ -86,7 +95,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/findOne")
-	public TbGoods findOne(Long id){
+	public Goods findOne(Long id){
 		return goodsService.findOne(id);		
 	}
 	

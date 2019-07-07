@@ -1,5 +1,5 @@
 //控制层
-app.controller('goodsController', function ($scope, $controller, goodsService, dfsService, item_CatService, type_TemplateService) {
+app.controller('goodsController', function ($scope, $controller, $location, goodsService, dfsService, item_CatService, type_TemplateService) {
 
     $controller('baseController', {$scope: $scope});//继承
 
@@ -23,13 +23,51 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
     };
 
     //查询实体
-    $scope.findOne = function (id) {
-        goodsService.findOne(id).success(
-            function (response) {
-                $scope.entity = response;
+    $scope.findOne = function () {
+        var id = $location.search()['id'];
+
+        if (id == null) {
+            return;
+        }
+
+        goodsService.findOne(id).success(function (response) {
+            $scope.entity = response;
+
+            //向富文本编辑器中添加回显数据
+            editor.html($scope.entity.tbGoodsDesc.introduction);
+
+            //向图片列表回显图片数据
+            $scope.entity.tbGoodsDesc.itemImages = JSON.parse($scope.entity.tbGoodsDesc.itemImages);
+
+            //读取商品扩展属性
+            $scope.entity.tbGoodsDesc.customAttributeItems = JSON.parse($scope.entity.tbGoodsDesc.customAttributeItems);
+
+            //读取规格
+            $scope.entity.tbGoodsDesc.specificationItems = JSON.parse($scope.entity.tbGoodsDesc.specificationItems);
+
+            //sku列表的展示
+            for (var i = 0; i < $scope.entity.itemList.length; i++) {
+                $scope.entity.itemList[i].spec = JSON.parse($scope.entity.itemList[i].spec);
             }
-        );
+        });
     };
+
+    //根据规格名称和选项名称返回是否被勾选
+    $scope.checkAttributeValue = function(specName,optionName){
+        var items = $scope.entity.tbGoodsDesc.specificationItems;
+
+        var object = $scope.searchObjectByKey(items,'attributeName',specName);
+
+        if (object == null) {
+            return false;
+        } else {
+            if (object.attributeValue.indexOf(optionName) >= 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 
     //保存数据
     $scope.add = function () {
@@ -128,7 +166,11 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
             $scope.typeTemplate = data;
             $scope.typeTemplate.brandIds = JSON.parse($scope.typeTemplate.brandIds);
             //模板id的值改变,还需要进行加载扩展属性
-            $scope.entity.tbGoodsDesc.customAttributeItems = JSON.parse($scope.typeTemplate.customAttributeItems);
+            
+            //回显新增,如果没有id才进行加载,
+            if ($location.search()['id'] == null) {
+                $scope.entity.tbGoodsDesc.customAttributeItems = JSON.parse($scope.typeTemplate.customAttributeItems);
+            }
         });
 
         //根据模板id查询规格选项列表
@@ -182,5 +224,46 @@ app.controller('goodsController', function ($scope, $controller, goodsService, d
 
         }
         return newList;
+    }
+
+    //显示订单的状态信息
+    $scope.status=['未审核','已审核','审核未通过','已关闭'];  //商品的状态
+
+    //显示分类的名称
+
+    //定义商品分类列表
+    $scope.itemCatList = [];
+
+    $scope.findItemCatList = function () {
+        item_CatService.findAll().success(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $scope.itemCatList[data[i].id] = data[i].name;
+            }
+        });
+    }
+
+    //修改后,保存
+    $scope.save = function () {
+        //提取富文本编辑器中的数据
+        $scope.entity.tbGoodsDesc.introduction = editor.html();
+
+        var serviceObject;  //服务层对象
+        
+        if ($scope.entity.tbGoods.id != null) {     //如果有id
+            serviceObject = goodsService.update($scope.entity); //修改
+        } else {
+            serviceObject = goodsService.add($scope.entity);    //添加一条数据
+        }
+
+        serviceObject.success(function (data) {
+           if (data.success){
+               alert("保存成功!")
+               $scope.entity={};//置空对象
+               editor.html(""); //清空文本
+               location.href = "goods.html";
+           } else {
+               alert(data.message);
+           }
+        });
     }
 });	

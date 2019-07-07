@@ -74,6 +74,10 @@ public class GoodsServiceImpl implements GoodsService {
         goodsDescMapper.insert(goods.getTbGoodsDesc());
 
 
+        saveItemList(goods);
+    }
+
+    private void saveItemList(Goods goods) {
         if ("1".equals(goods.getTbGoods().getIsEnableSpec())) {     //启用规格
 
             List<TbItem> itemList = goods.getItemList();
@@ -139,8 +143,21 @@ public class GoodsServiceImpl implements GoodsService {
      * 修改
      */
     @Override
-    public void update(TbGoods goods) {
-        goodsMapper.updateByPrimaryKey(goods);
+    public void update(Goods goods) {
+        goods.getTbGoods().setAuditStatus("0");//设置未申请状态，如果经过修改的的商品，需要重新设置商品的状态
+
+        goodsMapper.updateByPrimaryKey(goods.getTbGoods());
+
+        goodsDescMapper.updateByPrimaryKey(goods.getTbGoodsDesc()); //保存商品扩展表
+
+        //删除原有的sku列表
+        TbItemExample example = new TbItemExample();
+        TbItemExample.Criteria criteria = example.createCriteria();
+        criteria.andGoodsIdEqualTo(goods.getTbGoods().getId());
+        itemMapper.deleteByExample(example);
+
+        //添加新的sku列表
+        saveItemList(goods);
     }
 
     /**
@@ -150,8 +167,23 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public TbGoods findOne(Long id) {
-        return goodsMapper.selectByPrimaryKey(id);
+    public Goods findOne(Long id) {
+
+        Goods goods = new Goods();
+
+        TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+        goods.setTbGoods(tbGoods);
+
+        TbGoodsDesc tbGoodsDesc = goodsDescMapper.selectByPrimaryKey(id);
+        goods.setTbGoodsDesc(tbGoodsDesc);
+
+        TbItemExample example = new TbItemExample();
+        TbItemExample.Criteria criteria = example.createCriteria();
+        criteria.andGoodsIdEqualTo(id);
+        List<TbItem> tbItems = itemMapper.selectByExample(example);
+        goods.setItemList(tbItems);
+
+        return goods;
     }
 
     /**
