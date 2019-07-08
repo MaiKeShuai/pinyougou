@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.grop.Goods;
+import entity.Result;
 
 /**
  * 服务层接口
@@ -66,4 +67,5 @@ public interface GoodsService {
      */
     public PageInfo<TbGoods> findPage(TbGoods goods, int pageNum, int pageSize);
 
+    void updateStatus(Long[] ids, String status);
 }

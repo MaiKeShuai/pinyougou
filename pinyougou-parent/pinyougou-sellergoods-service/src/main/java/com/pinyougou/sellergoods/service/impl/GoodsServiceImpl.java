@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.*;
 import com.pinyougou.pojo.*;
 import com.pinyougou.pojo.grop.Goods;
+import entity.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.github.pagehelper.PageHelper;
@@ -234,6 +235,17 @@ public class GoodsServiceImpl implements GoodsService {
 
         List<TbGoods> list = goodsMapper.selectByExample(example);
         return new PageInfo<TbGoods>(list);
+    }
+
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        for (Long id : ids) {
+            TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+
+            tbGoods.setAuditStatus(status);
+
+            goodsMapper.updateByPrimaryKey(tbGoods);
+        }
     }
 
 }

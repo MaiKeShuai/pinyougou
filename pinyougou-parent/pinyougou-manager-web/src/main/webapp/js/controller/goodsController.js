@@ -24,11 +24,9 @@ app.controller('goodsController' ,function($scope,$controller,goodsService,itemC
 	
 	//查询实体 
 	$scope.findOne=function(id){				
-		goodsService.findOne(id).success(
-			function(response){
-				$scope.entity= response;					
-			}
-		);				
+		goodsService.findOne(id).success(function(response){
+			$scope.entity= response;
+		});
 	}
 	
 	//保存 
@@ -88,6 +86,17 @@ app.controller('goodsController' ,function($scope,$controller,goodsService,itemC
 				}
 			}
 		);
+	}
+
+	$scope.updateStatus=function(status){
+		goodsService.updateStatus($scope.selectIds,status).success(function (data) {
+			if (data.success) {
+				$scope.reloadList();//刷新页面
+				$scope.selectIds=[];
+			} else {
+				alert(data.message);
+			}
+		});
 	}
 
 });	
