@@ -1,5 +1,5 @@
  //控制层 
-app.controller('contentController' ,function($scope,$controller,contentService,dfsService){
+app.controller('contentController' ,function($scope,$controller,contentService,dfsService,contentCategoryService){
 	
 	$controller('baseController',{$scope:$scope});//继承
 	
@@ -87,5 +87,12 @@ app.controller('contentController' ,function($scope,$controller,contentService,d
 			}
 		});
 	};
+
+	//显示广告id列表
+	$scope.findContentCategoryList = function () {
+		contentCategoryService.findAll().success(function (data) {
+			$scope.contentCategoryList = data;
+		})
+	}
     
 });	
