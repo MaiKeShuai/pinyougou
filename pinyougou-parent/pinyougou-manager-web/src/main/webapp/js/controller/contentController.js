@@ -94,5 +94,7 @@ app.controller('contentController' ,function($scope,$controller,contentService,d
 			$scope.contentCategoryList = data;
 		})
 	}
+
+	$scope.status = ['无效','有效'];
     
 });	
