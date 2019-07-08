@@ -58,7 +58,12 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public PageInfo<TbGoods> findPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<TbGoods> list = goodsMapper.selectByExample(null);
+
+        TbGoodsExample example = new TbGoodsExample();
+        Criteria criteria = example.createCriteria();
+        criteria.andIsDeleteIsNull();   //过滤非删除状态
+        List<TbGoods> list = goodsMapper.selectByExample(example);
+
         return new PageInfo<TbGoods>(list);
     }
 
@@ -193,7 +198,10 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
-            goodsMapper.deleteByPrimaryKey(id);
+            TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+            tbGoods.setIsDelete("1");
+
+            goodsMapper.updateByPrimaryKey(tbGoods);
         }
     }
 
