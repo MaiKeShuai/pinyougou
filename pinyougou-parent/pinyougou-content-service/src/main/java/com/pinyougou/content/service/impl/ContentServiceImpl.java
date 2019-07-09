@@ -6,12 +6,12 @@ import com.github.pagehelper.PageInfo;
 import com.pinyougou.content.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbContentMapper;
 import com.pinyougou.pojo.TbContent;
 import com.pinyougou.pojo.TbContentExample;
 import com.pinyougou.pojo.TbContentExample.Criteria;
+import org.springframework.data.redis.core.RedisTemplate;
 
 
 /**
@@ -24,6 +24,9 @@ public class ContentServiceImpl implements ContentService {
 
     @Autowired
     private TbContentMapper contentMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 查询全部
@@ -107,6 +110,21 @@ public class ContentServiceImpl implements ContentService {
 
         List<TbContent> list = contentMapper.selectByExample(example);
         return new PageInfo<TbContent>(list);
+    }
+
+    @Override
+    public List<TbContent> findByCategoryId(Long categoryId){
+
+    TbContentExample example = new TbContentExample();
+        Criteria criteria = example.createCriteria();
+
+        criteria.andCategoryIdEqualTo(categoryId);
+        criteria.andStatusEqualTo("1"); //状态广告图片状态为1的
+        example.setOrderByClause("sort_order"); //排序
+
+        List<TbContent> list = contentMapper.selectByExample(example);
+
+        return list;
     }
 
 }
