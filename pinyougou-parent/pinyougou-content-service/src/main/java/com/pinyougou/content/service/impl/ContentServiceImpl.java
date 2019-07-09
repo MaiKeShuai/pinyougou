@@ -52,6 +52,9 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void add(TbContent content) {
         contentMapper.insert(content);
+
+        //新增图片 数据,清空缓存
+        redisTemplate.boundHashOps("content").delete(content.getCategoryId());
     }
 
 
@@ -61,6 +64,16 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void update(TbContent content) {
         contentMapper.updateByPrimaryKey(content);
+
+
+        //修改数据,清空缓存
+        Long categoryId = contentMapper.selectByPrimaryKey(content.getId()).getCategoryId();
+        redisTemplate.boundHashOps("content").delete(categoryId);
+
+        //如果分类id发生了变化,清除修改后的分类id的缓存
+        if (categoryId.longValue()!=content.getCategoryId().longValue()){
+            redisTemplate.boundHashOps("content").delete(content.getCategoryId());
+        }
     }
 
     /**
@@ -80,6 +93,10 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
+            //清除缓存
+            Long categoryId = contentMapper.selectByPrimaryKey(id).getCategoryId();
+            redisTemplate.boundHashOps("content").delete(categoryId);
+
             contentMapper.deleteByPrimaryKey(id);
         }
     }
@@ -113,18 +130,28 @@ public class ContentServiceImpl implements ContentService {
     }
 
     @Override
-    public List<TbContent> findByCategoryId(Long categoryId){
+    public List<TbContent> findByCategoryId(Long categoryId) {
 
-    TbContentExample example = new TbContentExample();
-        Criteria criteria = example.createCriteria();
+        //使用readis进行缓存数据
+        List<TbContent> contentList = (List<TbContent>) redisTemplate.boundHashOps("content").get(categoryId);
 
-        criteria.andCategoryIdEqualTo(categoryId);
-        criteria.andStatusEqualTo("1"); //状态广告图片状态为1的
-        example.setOrderByClause("sort_order"); //排序
+        if (contentList == null) {      //缓存中没有数据,进行数据库的查询,存储到缓存中
+            TbContentExample example = new TbContentExample();
+            Criteria criteria = example.createCriteria();
 
-        List<TbContent> list = contentMapper.selectByExample(example);
+            criteria.andCategoryIdEqualTo(categoryId);
+            criteria.andStatusEqualTo("1"); //状态广告图片状态为1的
+            example.setOrderByClause("sort_order"); //排序
 
-        return list;
+            List<TbContent> list = contentMapper.selectByExample(example);
+
+            redisTemplate.boundHashOps("content").put(categoryId,list); //存储缓存
+            System.out.println("数据库中查询");
+            return list;
+        }
+
+        System.out.println("缓存中查询");
+        return contentList; //缓存中有数据,直接返回缓存中的数据
     }
 
 }
