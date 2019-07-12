@@ -5,6 +5,7 @@ import com.pinyougou.pojo.TbItem;
 import com.pinyougou.search.ItemSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.*;
@@ -20,14 +21,41 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     @Autowired
     private SolrTemplate solrTemplate;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     public Map<String, Object> search(Map searchMap) {
         Map<String,Object> map = new HashMap<>();
 
         map.putAll(searchList(searchMap));  //高亮查询列表
 
-        List list = searchCategoryList(searchMap);//查询分类列表
-        map.put("categoryList",list);
+        List categoryList = searchCategoryList(searchMap);//查询分类列表
+        map.put("categoryList",categoryList);
+
+        //从缓存中查询数据
+        if (categoryList.size()>0){
+            //显示第一个上面分类名称的品牌和规格数据
+            map.putAll(searchBrandAndSpecList((String) categoryList.get(0)));
+        }
+
+        return map;
+    }
+
+    private Map searchBrandAndSpecList(String categoryName) {
+        Map map = new HashMap();
+
+        //根据名称查询分类id
+        Long categoryId = (Long) redisTemplate.boundHashOps("itemCat").get(categoryName);
+
+        //根据id查询品牌
+        if (categoryId != null){
+            List brandList = (List) redisTemplate.boundHashOps("brandList").get(categoryId);
+            map.put("brandList",brandList);
+
+            List specList = (List) redisTemplate.boundHashOps("specList").get(categoryId);
+            map.put("specList",specList);
+        }
 
         return map;
     }
