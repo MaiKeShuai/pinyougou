@@ -26,6 +26,11 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
     @Override
     public Map<String, Object> search(Map searchMap) {
+
+        //处理搜索关键字空格
+        String keywords = (String) searchMap.get("keywords");
+        searchMap.put("keywords",keywords.replace(" ",""));
+
         Map<String,Object> map = new HashMap<>();
 
         map.putAll(searchList(searchMap));  //高亮查询列表
@@ -154,13 +159,22 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                 FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
                 query.addFilterQuery(filterQuery);
             }
-
             if (!price[1].equals("*")){
                 Criteria filterCriteria = new Criteria("item_price").lessThanEqual(price[1]);
                 FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
                 query.addFilterQuery(filterQuery);
             }
         }
+
+        //按照分页进行查询
+        Integer pageNo = (Integer) searchMap.get("pageNo");
+        Integer pageSize = (Integer) searchMap.get("pageSize");
+        if (pageNo == null)
+            pageNo = 1;
+        if (pageSize == null)
+            pageSize = 30;
+        query.setOffset((pageNo-1) * pageSize);   //开始索引
+        query.setRows(pageSize);
 
 
 
@@ -176,6 +190,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         }
 
         map.put("rows",page.getContent());
+        map.put("totalPage",page.getTotalPages());   //总页数
+        map.put("total",page.getTotalElements());    //总纪录数
 
         return map;
     }
