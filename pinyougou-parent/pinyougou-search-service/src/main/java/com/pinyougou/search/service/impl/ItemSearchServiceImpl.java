@@ -121,6 +121,49 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         query.addCriteria(criteria);    //添加检索条件
         query.setHighlightOptions(highlightOptions);    //添加高亮条件
 
+        //按照分类查询
+        if (!"".equals(searchMap.get("category"))) {
+            Criteria filterCriteria = new Criteria("item_category").is(searchMap.get("category"));
+            FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+            query.addFilterQuery(filterQuery);
+        }
+
+        //按照品牌查询
+        if (!"".equals(searchMap.get("brand"))) {
+            Criteria filterCriteria = new Criteria("item_brand").is(searchMap.get("brand"));
+            FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+            query.addFilterQuery(filterQuery);
+        }
+
+        //按照规格查询
+        if (null != searchMap.get("spec")) {
+            Map<String,String> specMap = (Map<String, String>) searchMap.get("spec");
+            for (String key : specMap.keySet()) {
+                Criteria filterCriteria = new Criteria("item_spec_"+key).is(specMap.get(key));
+                FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+                query.addFilterQuery(filterQuery);
+            }
+        }
+
+        //按照价格过滤
+        if (!"".equals(searchMap.get("price"))) {
+            String priceStr = (String) searchMap.get("price");
+            String[] price = priceStr.split("-");
+            if (!price[0].equals("0")){
+                Criteria filterCriteria = new Criteria("item_price").greaterThanEqual(price[0]);
+                FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+                query.addFilterQuery(filterQuery);
+            }
+
+            if (!price[1].equals("*")){
+                Criteria filterCriteria = new Criteria("item_price").lessThanEqual(price[1]);
+                FilterQuery filterQuery = new SimpleFilterQuery(filterCriteria);
+                query.addFilterQuery(filterQuery);
+            }
+        }
+
+
+
         HighlightPage<TbItem> page = solrTemplate.queryForHighlightPage(query, TbItem.class);
 
         //高亮入口
