@@ -36,6 +36,7 @@ public class TbItem implements Serializable {
 
     private Date createTime;
 
+    @Field("item_updatetime")
     private Date updateTime;
 
     private String itemSn;
@@ -258,34 +259,5 @@ public class TbItem implements Serializable {
 
     public void setSpecMap(Map<String, String> specMap) {
         this.specMap = specMap;
-    }
-
-    @Override
-    public String toString() {
-        return "TbItem{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", sellPoint='" + sellPoint + '\'' +
-                ", price=" + price +
-                ", stockCount=" + stockCount +
-                ", num=" + num +
-                ", barcode='" + barcode + '\'' +
-                ", image='" + image + '\'' +
-                ", categoryid=" + categoryid +
-                ", status='" + status + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", itemSn='" + itemSn + '\'' +
-                ", costPirce=" + costPirce +
-                ", marketPrice=" + marketPrice +
-                ", isDefault='" + isDefault + '\'' +
-                ", goodsId=" + goodsId +
-                ", sellerId='" + sellerId + '\'' +
-                ", cartThumbnail='" + cartThumbnail + '\'' +
-                ", category='" + category + '\'' +
-                ", brand='" + brand + '\'' +
-                ", spec='" + spec + '\'' +
-                ", seller='" + seller + '\'' +
-                '}';
     }
 }

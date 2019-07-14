@@ -19,7 +19,7 @@
 
 </head>
 
-<body ng-app="pinyougou" ng-controller="searchController">
+<body ng-app="pinyougou" ng-controller="searchController" ng-init="loadkeywords()">
 {{searchMap}}
 <!-- 头部栏位 -->
 <!--页面顶部-->
@@ -178,7 +178,7 @@
                 </div>
                 <div class="fl ext"></div>
             </div>
-            <div class="type-wrap logo" ng-if="resultMap.brandList!=null  && searchMap.brand==''">
+            <div class="type-wrap logo" ng-if="resultMap.brandList!=null  && searchMap.brand=='' && !keywordsIsBrand()">
                 <div class="fl key brand">品牌</div>
                 <div class="value logos">
                     <ul class="logo-list">
@@ -261,19 +261,22 @@
                 <div class="navbar-inner filter">
                     <ul class="sui-nav">
                         <li class="active">
-                            <a href="#">综合</a>
+                            <a href="#" ng-click="sortSearch('','')">综合</a>
                         </li>
                         <li>
                             <a href="#">销量</a>
                         </li>
                         <li>
-                            <a href="#">新品</a>
+                            <a href="#" ng-click="sortSearch('DESC','updatetime')">新品</a>
                         </li>
                         <li>
                             <a href="#">评价</a>
                         </li>
                         <li>
-                            <a href="#">价格</a>
+                            <a href="#" ng-click="sortSearch('ASC','price')">价格↑</a>
+                        </li>
+                        <li>
+                            <a href="#" ng-click="sortSearch('DESC','price')">价格↓</a>
                         </li>
                     </ul>
                 </div>
@@ -312,15 +315,15 @@
                 <div class="sui-pagination pagination-large">
                     <ul>
                         <li class="prev {{isTopPage()?'disabled':''}}">
-                        <a href="#" ng-click="queryByPage(searchMap.pageNo-1)">«</a>
+                            <a href="#" ng-click="queryByPage(searchMap.pageNo-1)">«</a>
                         </li>
-                        <li class="dotted" ng-if="firstDot==true"><span>...</span></li>
+                        <li class="dotted" ng-if="firstDot"><span>...</span></li>
                         <li class="{{isActive(page)?'active':''}}" ng-repeat="page in pageLabel">
                             <a href="#" ng-click="queryByPage(page)">{{page}}</a>
                         </li>
-                        <li class="dotted" ng-if="lastDot==true"><span>...</span></li>
+                        <li class="dotted" ng-if="lastDot"><span>...</span></li>
                         <li class="next {{isEndPage()?'disabled':''}}">
-                        <a href="#" ng-click="queryByPage(searchMap.pageNo+1)">»</a>
+                            <a href="#" ng-click="queryByPage(searchMap.pageNo+1)">»</a>
                         </li>
                     </ul>
                     <div><span>共{{resultMap.totalPage}}&nbsp;</span>

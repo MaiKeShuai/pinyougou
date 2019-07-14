@@ -1,8 +1,12 @@
 package com.pinyougou.manager.controller;
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.pinyougou.page.service.ItemPageService;
+import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.grop.Goods;
+import com.pinyougou.search.ItemSearchService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +26,12 @@ public class GoodsController {
 
 	@Reference
 	private GoodsService goodsService;
+
+	@Reference
+	private ItemSearchService itemSearchService;
+
+	@Reference(timeout = 50000)
+	private ItemPageService itemPageService;
 	
 	/**
 	 * 返回全部列表
@@ -93,6 +103,10 @@ public class GoodsController {
 	public Result delete(Long [] ids){
 		try {
 			goodsService.delete(ids);
+
+			itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+
+
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,10 +131,23 @@ public class GoodsController {
 
 		try {
 			goodsService.updateStatus(ids,status);
+
+			if ("1".equals(status)){	//修改状态为审核通过的需要进行批量导入solr库
+				List<TbItem> itemList = goodsService.findItemListByGoodsIdandStatus(ids, status);
+				if (itemList.size()>0){
+					itemSearchService.importList(itemList);
+				}
+			}
 			return new Result(true,"成功");
 		} catch (Exception e) {
 			return new Result(false, "失败");
 		}
 	}
-	
+
+	@RequestMapping("/genHtml")
+	public void genHtml(Long goodsId){
+		itemPageService.genItemHtml(goodsId);
+	}
+
+
 }

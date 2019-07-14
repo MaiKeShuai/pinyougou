@@ -8,47 +8,27 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>pinyougou-manager-web</artifactId>
     <packaging>war</packaging>
 
-    <dependencies>
+    <artifactId>pinyougou-page-service</artifactId>
 
-        <dependency>
-            <groupId>com.maikebai</groupId>
-            <artifactId>pinyougou-sellergoods-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.maikebai</groupId>
-            <artifactId>pinyougou-search-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+    <dependencies>
         <dependency>
             <groupId>com.maikebai</groupId>
             <artifactId>pinyougou-page-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--广告管理接口-->
         <dependency>
             <groupId>com.maikebai</groupId>
-            <artifactId>pinyougou-content-interface</artifactId>
+            <artifactId>pinyougou-dao</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.maikebai</groupId>
-            <artifactId>pinyougou-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
         </dependency>
-        <!--springSecurity-->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -116,6 +96,7 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -126,13 +107,12 @@
                 <version>2.2</version>
                 <configuration>
                     <!-- 指定端口 -->
-                    <port>9101</port>
+                    <port>9005</port>
                     <!-- 请求路径 -->
                     <path>/</path>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 
 </project>
